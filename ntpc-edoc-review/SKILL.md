@@ -31,7 +31,7 @@ description: 以校長角色核閱新北市二代公文系統（cloud2.ntpc.gov.
 完成條件：清單件數與頁面「總筆數」一致。
 
 ### 3. 逐件讀文與附件
-每件用 [`scripts/open_doc.js`](scripts/open_doc.js) 開啟，`get_page_text` 讀全文：來文或簽稿、承辦擬辦、會辦與簽核流程。
+每件用 [`scripts/open_doc.js`](scripts/open_doc.js) 開啟，`get_page_text` 讀全文（來文或簽稿、簽核流程），**再跑 [`scripts/read_opinions.js`](scripts/read_opinions.js) 讀承辦／會辦／核判三個頁籤的意見**。`get_page_text` 只讀得到預設的「承辦」頁籤，會辦人的意見（例如「職以公假登記出席」）要切頁籤才看得到；漏讀會把已有擬辦的件誤判成「擬辦未回應」（實測曾發生）。
 
 **有附件就開附件**（校長要求，不可省略）。依操作手冊第三節，附件有兩種來源：
 - **系統內附件**：左側「來文／稿」分頁有迴紋針圖示，用 [`scripts/download_attachments.js`](scripts/download_attachments.js) 下載。
