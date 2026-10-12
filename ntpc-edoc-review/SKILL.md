@@ -74,7 +74,7 @@ description: 以校長角色核閱新北市二代公文系統（cloud2.ntpc.gov.
 完成條件：每一件都收到校長的明確回覆。沒有回覆的件，維持原狀不送出。
 
 ### 6. 逐件送出
-依操作手冊第四節，每件分兩個 batch：先開文，再「點意見欄＋[`scripts/fill_and_submit.js`](scripts/fill_and_submit.js)」。腳本會檢查文號、焦點與寫入文字，三道都通過才按鈕。
+依操作手冊第四節，每件分兩個 batch：先開文並量出決行鈕座標，再「點意見欄 → 等 1 秒 → [`scripts/fill_and_submit.js`](scripts/fill_and_submit.js) 填意見 → `computer left_click` 決行 → 輪詢結果」合併成一步。腳本只填意見，文號、焦點、文字、按鈕位置任一項不符就中止，後面的點擊不會執行。
 - 出現 PinCode 視窗：停下，請校長輸入。
 - 腳本回報 `ABORT`：代表還沒送出，重點意見欄再執行一次。
 - 附審查報告的退件：先完成附件上傳並確認檔名出現，再填意見、退承辦人（見第 4 步「第二層」）。
@@ -90,7 +90,7 @@ description: 以校長角色核閱新北市二代公文系統（cloud2.ntpc.gov.
    - 本技能 `scripts/` 的路徑與操作手冊第四節的步驟。
 4. **subagent 的做法**：
    - 先 `tabs_create_mcp` 開自己的分頁，不碰主線和其他 subagent 的分頁（同一個 SPEED 分頁不能並行操作）。
-   - 在自己的分頁開 OdMainFrame → 待辦理區 → `open_doc.js` → 定位意見欄 → 點擊 → `fill_and_submit.js` → 輪詢到「作業成功」。一件完成才做下一件。
+   - 在自己的分頁開 OdMainFrame → 待辦理區 → `open_doc.js` → 定位意見欄 → 點擊並等 1 秒 → `fill_and_submit.js` → `computer left_click` 決行 → 輪詢到「作業成功」。一件完成才做下一件。
    - 遇到 PinCode、同一件 `ABORT` 兩次、錯誤訊息、找不到文號、權限審查拒絕：**停止該組並回報**，不重試、不換方法。
    - 結束時關閉自己的分頁，回報每件的文號和結果字串。
 5. **主線收尾**：彙整各組回報，重讀清單，確認已處理的件都不在清單上；未完成的件列給校長。
