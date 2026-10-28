@@ -19,8 +19,10 @@ description: 以校長角色核閱新北市二代公文系統（cloud2.ntpc.gov.
 
 ### 1. 進入系統
 **一開始（含每次「開工」後）就主動把公務雲登入頁顯示給校長**，不用等校長開口：
-1. `list_connected_browsers` 選標記 `onThisComputer` 的 Chrome（別台電腦的不要選）。
-2. `tabs_context_mcp`（createIfEmpty）→ navigate `https://cloud2.ntpc.gov.tw/login`，截圖確認出現帳號、密碼、驗證碼欄位。首頁如果跳出「請重新登入」，直接開 `/login`。
+1. **先確認本機真的有在跑 Chrome，再選瀏覽器**。`onThisComputer` 標記可能是舊的：實測曾遇到某個連線標著 `onThisComputer`，本機卻沒有開 Chrome，結果登入頁開到別台電腦。
+   - PowerShell 執行 `(Get-Process chrome -ErrorAction SilentlyContinue | Measure-Object).Count`。結果是 0 → 本機沒開 Chrome，清單上任何一個都不是本機。這時先用 `Start-Process chrome.exe -ArgumentList '--profile-directory="<公務帳戶的設定檔>"','https://cloud2.ntpc.gov.tw/login'` 開啟，請校長按擴充圖示連線，再重新查清單。
+   - `list_connected_browsers` 選 `onThisComputer` 的那一個；`connectedAt` 要是校長剛連線的時間，不能是很久以前的舊連線。別台電腦的不要選。
+2. `tabs_context_mcp`（createIfEmpty）→ navigate `https://cloud2.ntpc.gov.tw/login`。開好後再驗一次是不是本機：PowerShell 執行 `Get-Process chrome | ? MainWindowTitle | % MainWindowTitle`，要看到「新北公務雲」這個視窗標題；看不到就是開到別台電腦，回到第 1 步。截圖確認出現帳號、密碼、驗證碼欄位。首頁如果跳出「請重新登入」，直接開 `/login`。
 3. 告訴校長：登入頁已開在本機 Chrome 的 Claude 分頁群組；請確認帳號欄沒有被自動填錯，再輸入驗證碼登入，也可以用自然人憑證登入。舊的二代公文分頁若顯示「系統發生錯誤」，那是逾時的舊分頁，不是登入處。
 
 校長說「已登入」後，依 [`references/操作手冊.md`](references/操作手冊.md) 第一節完成 SSO → 開 `OdMainFrame.aspx`。
